@@ -27,6 +27,6 @@ if __name__ == "__main__":
     model = torch.load('model.pth').to('cpu')
     infer_data_path = "/home/obergam/Data/flir/images_thermal_val/"
     infer_dataset = DenoiserDataset(infer_data_path, 0, 0.1)
-    infer_dataloader = DataLoader(infer_dataset, batch_size=1, num_workers=1)
+    infer_dataloader = DataLoader(infer_dataset, batch_size=1, num_workers=1, shuffle=True)
 
     infer(infer_dataloader, model, 'cpu')
