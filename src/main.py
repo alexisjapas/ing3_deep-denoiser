@@ -32,7 +32,7 @@ for inputs, targets in train_dataloader: # DEBUG
 # Train
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-epochs = 4
+epochs = 10
 for e in range(epochs):
     print(f"Epoch {e+1}")
     epoch_loss = train(train_dataloader, model, loss_fn, optimizer, device)

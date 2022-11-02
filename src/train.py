@@ -19,4 +19,5 @@ def train(dataloader, model, loss_fn, optimizer, device):
         # Monitoring
         losses.append(loss.item())
 
+    # Returns losses mean
     return sum(losses) / len(losses)

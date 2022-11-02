@@ -11,31 +11,31 @@ import transformers
 
 class DenoiserDataset(Dataset):
     def __init__(self, dataset_path, crop_size, noise_density):
-        self.images_paths = [join(dataset_path, path) for path in listdir(dataset_path) if isfile(join(dataset_path, path))]
+        self.targets_paths = [join(dataset_path, path) for path in listdir(dataset_path) if isfile(join(dataset_path, path))]
         self.crop_size = crop_size
         self.noise_density = noise_density
 
     def __len__(self):
-        return len(self.images_paths)
+        return len(self.targets_paths)
 
     def __getitem__(self, index):
-        # Read input image
-        image_path = self.images_paths[index]
-        image = mpimg.imread(image_path).astype(float)
+        # Read input target
+        target_path = self.targets_paths[index]
+        target = mpimg.imread(target_path).astype(float)
 
-        # Crop
+        # Crop input target
         if self.crop_size > 0:
-            image = transformers.random_crop(image, self.crop_size, self.crop_size)
+            target = transformers.random_crop(target, self.crop_size, self.crop_size)
 
-        # Normalize
-        image = (image - np.min(image)) / (np.max(image) - np.min(image))
+        # Normalize input target
+        target = (target - np.min(target)) / (np.max(target) - np.min(target))
 
         # Generate final input / target
-        noisy_image = noises.salt_and_pepper(image, self.noise_density)
-        target = image.copy()
+        noisy_input = target.copy()
+        noisy_input = noises.salt_and_pepper(target, self.noise_density)
 
         # Transform to tensor
-        tensor_noisy_image = torch.as_tensor(np.array([noisy_image]), dtype=torch.float)
+        tensor_noisy_input = torch.as_tensor(np.array([noisy_input]), dtype=torch.float)
         tensor_target = torch.as_tensor(np.array([target]), dtype=torch.float)
 
-        return tensor_noisy_image, tensor_target
+        return tensor_noisy_input, tensor_target
