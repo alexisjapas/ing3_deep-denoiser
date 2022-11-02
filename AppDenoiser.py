@@ -1,6 +1,7 @@
 from qtpy.QtWidgets import QWidget, QVBoxLayout
 from magicgui import magicgui
 from napari.qt.threading import thread_worker
+from napari.layers import Image
 
 
 class Denoiser(QWidget):
@@ -13,16 +14,20 @@ class Denoiser(QWidget):
         self.setLayout(layout)
 
     @magicgui(call_button="Denoise")
-    def denoise(self, n_layers=18):
+    def denoise(self, image: Image, n_layers=18):
         def _update_viewer(corrected_image):
-            if "corrected_image" in self.viewer.layers:
-                self.viewer.layers["corrected_image"] = self.corrected_image
+            layer_name = f"{image.name}_corr"
+            if layer_name in self.viewer.layers:
+                self.viewer.layers[layer_name] = self.corrected_image
             else:
-                self.viewer.add_image(self.corrected_image, name=corrected_image)
+                self.viewer.add_image(self.corrected_image, name=layer_name)
 
         @thread_worker
         def _denoise():
             return corrected_image
+
+        # Setup model
+        model = VDSR(n_layers).to("cpu")
 
         # Denoise
         worker = _denoise()
