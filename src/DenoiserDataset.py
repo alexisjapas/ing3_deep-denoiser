@@ -6,7 +6,7 @@ from os.path import isfile, join
 import numpy as np
 
 import noises
-import transformers
+import transformers as trfs
 
 
 class DenoiserDataset(Dataset):
@@ -25,10 +25,10 @@ class DenoiserDataset(Dataset):
 
         # Crop input target
         if self.crop_size > 0:
-            target = transformers.random_crop(target, self.crop_size, self.crop_size)
+            target = trfs.random_crop(target, self.crop_size, self.crop_size)
 
         # Normalize input target
-        target = (target - np.min(target)) / (np.max(target) - np.min(target))
+        target = trfs.normalize(target)
 
         # Generate final input / target
         noisy_input = target.copy()

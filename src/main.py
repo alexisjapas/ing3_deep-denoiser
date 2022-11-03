@@ -19,7 +19,7 @@ print(model)
 # Dataset
 train_data_path = "/home/obergam/Data/flir/images_thermal_train/"
 crop_size = 82
-noise_density = 0.1
+noise_density = 0.5
 train_dataset = DenoiserDataset(train_data_path, crop_size, noise_density)
 
 # Dataloader
@@ -32,7 +32,7 @@ for inputs, targets in train_dataloader: # DEBUG
 # Train
 loss_fn = nn.MSELoss()
 optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
-epochs = 10
+epochs = 100
 for e in range(epochs):
     print(f"Epoch {e+1}")
     epoch_loss = train(train_dataloader, model, loss_fn, optimizer, device)

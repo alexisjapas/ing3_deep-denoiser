@@ -1,4 +1,7 @@
 from random import randint
+import numpy as np
+
+import transformers as trfs
 
 
 def random_crop(image, y_dim, x_dim):
@@ -7,6 +10,10 @@ def random_crop(image, y_dim, x_dim):
     x_left = randint(0, image.shape[1] - x_dim)
     x_right = x_left + x_dim
     return image[y_top:y_bot, x_left:x_right]
+
+
+def normalize(image):
+    return (image - np.min(image)) / (np.max(image) - np.min(image))
 
 
 if __name__ == "__main__":
