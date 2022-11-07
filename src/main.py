@@ -11,15 +11,15 @@ from train import train
 #### MODEL
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {device}")
-model = VDSR(18).to(device)
+model = VDSR(8).to(device)
 print(model)
 
 
 #### TRAINING
 # Dataset
 train_data_path = "/home/obergam/Data/flir/images_thermal_train/"
-crop_size = 82
-noise_density = 0.5
+crop_size = 42
+noise_density = (0.11, 0.66)
 train_dataset = DenoiserDataset(train_data_path, crop_size, noise_density)
 
 # Dataloader

@@ -4,6 +4,7 @@ from matplotlib import image as mpimg
 from os import listdir
 from os.path import isfile, join
 import numpy as np
+from random import uniform
 
 import noises
 import transformers as trfs
@@ -19,6 +20,12 @@ class DenoiserDataset(Dataset):
         return len(self.targets_paths)
 
     def __getitem__(self, index):
+        # Setup noise density if random
+        if type(self.noise_density) == tuple:
+            noise_density = uniform(self.noise_density[0], self.noise_density[1])
+        else:
+            noise_density = self.noise_density
+
         # Read input target
         target_path = self.targets_paths[index]
         target = mpimg.imread(target_path).astype(float)
@@ -32,7 +39,7 @@ class DenoiserDataset(Dataset):
 
         # Generate final input / target
         noisy_input = target.copy()
-        noisy_input = noises.salt_and_pepper(target, self.noise_density)
+        noisy_input = noises.salt_and_pepper(target, noise_density)
 
         # Transform to tensor
         tensor_noisy_input = torch.as_tensor(np.array([noisy_input]), dtype=torch.float)
